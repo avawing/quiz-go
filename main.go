@@ -7,12 +7,14 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
 	//create name for csv file flag name, default name, help text
 	// csvFilename is a pointer to a string, this is just how the flag package works
 	csvFilename := flag.String("csv", "problems.csv", "A csv file in the format 'question,answer'")
+	timeLimit := flag.Int("limit", 30, "The time limit for the quiz in seconds")
 	flag.Parse()
 
 	// go build main.go
@@ -32,20 +34,31 @@ func main() {
 	}
 
 	// reader / writers are very common in go
+	// setup work THEN start timer
 	lines := createLines(file)
 	problems := parseLines(lines)
+	// create timer -> fixed *timeLimit is not time.Duration by coercing type
+	timer := time.NewTimer(time.Duration(*timeLimit) * time.Second)
 
 	// initialize counter
 	correct := 0
 	// index, problem
 	for i, p := range problems {
-		// account for zero indexing, access question
-		fmt.Printf("Problem %d: %s = \n", i+1, p.q)
+		select {
+		case <-timer.C:
+			fmt.Printf("You scored %d out of %d \n", correct, len(problems))
+			//breaks fully out of for loop
+			return
+		default:
+			fmt.Printf("Problem %d: %s = \n", i+1, p.q)
 
-		// check correctness of answer
-		if checkAnswer(p) == true {
-			correct++
+			// check correctness of answer
+			if checkAnswer(p) == true {
+				correct++
+			}
 		}
+		// account for zero indexing, access question
+
 	}
 	fmt.Printf("You scored %d out of %d \n", correct, len(problems))
 }
