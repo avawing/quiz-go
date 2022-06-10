@@ -44,16 +44,25 @@ func main() {
 	correct := 0
 	// index, problem
 	for i, p := range problems {
+		fmt.Printf("Problem %d: %s = \n", i+1, p.q)
+		answerChan := make(chan string)
+		// anonymous function
+		// go routine
+		go func() {
+			var answer string
+			_, err := fmt.Scanf("%s", &answer)
+			if err != nil {
+				exit("Oops!")
+			}
+			answerChan <- answer
+		}()
 		select {
 		case <-timer.C:
 			fmt.Printf("You scored %d out of %d \n", correct, len(problems))
 			//breaks fully out of for loop
 			return
-		default:
-			fmt.Printf("Problem %d: %s = \n", i+1, p.q)
-
-			// check correctness of answer
-			if checkAnswer(p) == true {
+		case answer := <-answerChan:
+			if answer == p.a {
 				correct++
 			}
 		}
@@ -68,19 +77,6 @@ func main() {
 type problem struct {
 	q string
 	a string
-}
-
-func checkAnswer(p problem) bool {
-	var answer string
-	// scan for entered string (Scan f removed spaces), &answer points to variable and updates it
-	_, err := fmt.Scanf("%s\n", &answer)
-	if err != nil {
-		exit("Something hella broke")
-	}
-	if answer == p.a {
-		return true
-	}
-	return false
 }
 
 func createLines(file io.Reader) [][]string {
