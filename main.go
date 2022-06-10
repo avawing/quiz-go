@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
@@ -31,14 +32,7 @@ func main() {
 	}
 
 	// reader / writers are very common in go
-	r := csv.NewReader(file)
-
-	// parse csv -> entire file upfront -> small file, not going to cause mem issues
-	lines, err := r.ReadAll()
-
-	if err != nil {
-		exit("failed to parse provided csv file")
-	}
+	lines := createLines(file)
 
 	problems := parseLines(lines)
 
@@ -69,6 +63,17 @@ type problem struct {
 	a string
 }
 
+func createLines(file io.Reader) [][]string {
+	r := csv.NewReader(file)
+
+	// parse csv -> entire file upfront -> small file, not going to cause mem issues
+	lines, err := r.ReadAll()
+
+	if err != nil {
+		exit("failed to parse provided csv file")
+	}
+	return lines
+}
 func parseLines(lines [][]string) []problem {
 	// make array of problems that is the length of the lines
 	// arrays have predefined length!!
