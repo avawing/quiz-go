@@ -33,7 +33,6 @@ func main() {
 
 	// reader / writers are very common in go
 	lines := createLines(file)
-
 	problems := parseLines(lines)
 
 	// initialize counter
@@ -42,14 +41,9 @@ func main() {
 	for i, p := range problems {
 		// account for zero indexing, access question
 		fmt.Printf("Problem %d: %s = \n", i+1, p.q)
-		var answer string
-		// scan for entered string (Scan f removed spaces), &answer points to variable and updates it
-		_, err := fmt.Scanf("%s\n", &answer)
-		if err != nil {
-			exit("Something hella broke")
-		}
+
 		// check correctness of answer
-		if answer == p.a {
+		if checkAnswer(p) == true {
 			correct++
 		}
 	}
@@ -61,6 +55,19 @@ func main() {
 type problem struct {
 	q string
 	a string
+}
+
+func checkAnswer(p problem) bool {
+	var answer string
+	// scan for entered string (Scan f removed spaces), &answer points to variable and updates it
+	_, err := fmt.Scanf("%s\n", &answer)
+	if err != nil {
+		exit("Something hella broke")
+	}
+	if answer == p.a {
+		return true
+	}
+	return false
 }
 
 func createLines(file io.Reader) [][]string {
