@@ -41,6 +41,8 @@ func main() {
 
 	problems := parseLines(lines)
 
+	// initialize counter
+	correct := 0
 	// index, problem
 	for i, p := range problems {
 		// account for zero indexing, access question
@@ -53,9 +55,10 @@ func main() {
 		}
 		// check correctness of answer
 		if answer == p.a {
-			fmt.Println("Correct")
+			correct++
 		}
 	}
+	fmt.Printf("You scored %d out of %d \n", correct, len(problems))
 }
 
 // type
