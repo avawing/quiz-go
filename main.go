@@ -41,7 +41,21 @@ func main() {
 
 	problems := parseLines(lines)
 
-	fmt.Println(problems)
+	// index, problem
+	for i, p := range problems {
+		// account for zero indexing, access question
+		fmt.Printf("Problem %d: %s = \n", i+1, p.q)
+		var answer string
+		// scan for entered string (Scan f removed spaces), &answer points to variable and updates it
+		_, err := fmt.Scanf("%s\n", &answer)
+		if err != nil {
+			exit("Something hella broke")
+		}
+		// check correctness of answer
+		if answer == p.a {
+			fmt.Println("Correct")
+		}
+	}
 }
 
 // type
