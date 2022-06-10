@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"flag"
 	"fmt"
 	"os"
@@ -28,8 +29,17 @@ func main() {
 		exit(fmt.Sprintf("failed to open the csv file: %s ", *csvFilename))
 	}
 
-	_ = file
-	// no unused variables for code compilation
+	// reader / writers are very common in go
+	r := csv.NewReader(file)
+
+	// parse csv -> entire file upfront -> small file, not going to cause mem issues
+	lines, err := r.ReadAll()
+
+	if err != nil {
+		exit("failed to parse provided csv file")
+	}
+
+	fmt.Println(lines)
 }
 
 // functions have one purpose
