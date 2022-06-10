@@ -39,7 +39,33 @@ func main() {
 		exit("failed to parse provided csv file")
 	}
 
-	fmt.Println(lines)
+	problems := parseLines(lines)
+
+	fmt.Println(problems)
+}
+
+// type
+
+type problem struct {
+	q string
+	a string
+}
+
+func parseLines(lines [][]string) []problem {
+	// make array of problems that is the length of the lines
+	// arrays have predefined length!!
+	// faster to create 'bucket' in this way
+	ret := make([]problem, len(lines))
+	// for index, line in range of lines
+	for i, line := range lines {
+		// create a problem (LOL)
+		// trailing comma necessary
+		ret[i] = problem{
+			q: line[0],
+			a: line[1],
+		}
+	}
+	return ret
 }
 
 // functions have one purpose
