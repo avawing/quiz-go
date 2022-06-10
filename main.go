@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -79,7 +80,8 @@ func parseLines(lines [][]string) []problem {
 		// trailing comma necessary
 		ret[i] = problem{
 			q: line[0],
-			a: line[1],
+			// trim spaces from answers - in case of poor formatting
+			a: strings.TrimSpace(line[1]),
 		}
 	}
 	return ret
